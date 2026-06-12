@@ -30,14 +30,40 @@ REGEX_PATTERNS = [
     (re.compile(r'\bMRN[\s:#]*\d+\b', re.I),       '[MRN]'),
     (re.compile(r'\bPatient\s+ID[\s:#]*\d+\b', re.I), '[PATIENT_ID]'),
     # Phone numbers
-    (re.compile(r'\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b'), '[PHONE]'),
+    (re.compile(r'\(?\d{3}\)?[-.\s]?\d{3}[-.\s]\d{4}\b'), '[PHONE]'),  # handles (312) 555-0177 too
     # SSN
     (re.compile(r'\b\d{3}-\d{2}-\d{4}\b'),           '[SSN]'),
     # Email
     (re.compile(r'\b[\w.+-]+@[\w-]+\.[a-z]{2,}\b', re.I), '[EMAIL]'),
+    # URLs / patient-portal links -- after EMAIL deliberately (see above)
+    (re.compile(r'\b(?:https?://)?(?:[a-z0-9-]+\.)+(?:com|org|net|edu|gov|io|co|health|info)\b(?:/\S*)?', re.I), '[URL]'),
     # Dates (catches formats spaCy sometimes misses)
     (re.compile(r'\b\d{1,2}/\d{1,2}/\d{2,4}\b'),    '[DATE]'),
 ]
+
+
+# Titles that mark a nearby PERSON entity as a clinician, not a patient.
+# Checked immediately before ("Dr. Sarah Johnson") or after
+# ("Jane Doe, MD" / "Jennifer Patel RN") the entity span.
+PROVIDER_TITLE_PREFIXES = {"dr", "prof", "professor", "rn", "np", "pa"}
+PROVIDER_TITLE_SUFFIXES = {"md", "do", "rn", "np", "pa", "pa-c", "phd"}
+
+
+def _is_provider_context(doc, ent) -> bool:
+    """Heuristic: does this PERSON entity look like a clinician, not a patient?"""
+    if ent.start > 0:
+        prev = doc[ent.start - 1].text.strip(".,").lower()
+        if prev in PROVIDER_TITLE_PREFIXES:
+            return True
+    if ent.end < len(doc):
+        nxt = doc[ent.end].text.strip(".,").lower()
+        if nxt in PROVIDER_TITLE_SUFFIXES:
+            return True
+        if doc[ent.end].text == "," and ent.end + 1 < len(doc):
+            nxt2 = doc[ent.end + 1].text.strip(".,").lower()
+            if nxt2 in PROVIDER_TITLE_SUFFIXES:
+                return True
+    return False
 
 
 class Pseudonymiser:
@@ -72,6 +98,8 @@ class Pseudonymiser:
         for ent in doc.ents:
             if ent.label_ in REDACT_LABELS:
                 placeholder_label = REDACT_LABELS[ent.label_]
+                if ent.label_ == "PERSON" and _is_provider_context(doc, ent):
+                    placeholder_label = "PROVIDER"
                 token = self._get_token(ent.text, placeholder_label)
                 replacements.append((ent.start_char, ent.end_char, token))
 
