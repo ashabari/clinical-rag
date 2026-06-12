@@ -75,13 +75,14 @@ class Retriever:
             include=["documents", "metadatas", "distances"]
         )
         hits = []
-        for rank, (doc, meta, dist) in enumerate(zip(
+        for rank, (cid, doc, meta, dist) in enumerate(zip(
+            results["ids"][0],
             results["documents"][0],
             results["metadatas"][0],
             results["distances"][0],
         )):
             hits.append({
-                "chunk_id":    meta.get("doc_id", "") + f"_r{rank}",
+                "chunk_id":    cid,  # real chunk_id, e.g. "doc_0042_chunk_002" -- matches BM25's ID scheme
                 "text":        doc,
                 "metadata":    meta,
                 "vector_rank": rank + 1,
