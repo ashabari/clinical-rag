@@ -40,6 +40,10 @@ def run_ablation():
         vector_match = expected in vector_specialties
 
         bm25_hits = retriever._bm25_search(clean_query)
+        bm25_top3 = bm25_hits[:3]
+        bm25_specialties = set(h["metadata"]["specialty"] for h in bm25_top3)
+        bm25_match = expected in bm25_specialties
+
         fused = retriever._fuse_rrf(vector_hits, bm25_hits)
         hybrid_top3 = fused[:3]
         hybrid_specialties = set(h["metadata"]["specialty"] for h in hybrid_top3)
@@ -54,11 +58,12 @@ def run_ablation():
             "question": query[:50],
             "expected_specialty": expected,
             "vector_only_match": vector_match,
+            "bm25_only_match": bm25_match,
             "hybrid_rrf_match": hybrid_match,
             "hybrid_rerank_match": final_match,
         })
 
-        print("  " + item["id"] + ": vector=" + str(vector_match) + " hybrid=" + str(hybrid_match) + " hybrid+rerank=" + str(final_match))
+        print("  " + item["id"] + ": vector=" + str(vector_match) + " bm25=" + str(bm25_match) + " hybrid=" + str(hybrid_match) + " hybrid+rerank=" + str(final_match))
 
     df = pd.DataFrame(rows)
     Path("outputs").mkdir(exist_ok=True)
@@ -68,6 +73,7 @@ def run_ablation():
     print("ABLATION SUMMARY (retrieval match rate)")
     print("=" * 50)
     print("Vector-only:       " + str(round(df["vector_only_match"].mean() * 100, 1)) + "%")
+    print("BM25-only:         " + str(round(df["bm25_only_match"].mean() * 100, 1)) + "%")
     print("Hybrid (RRF):      " + str(round(df["hybrid_rrf_match"].mean() * 100, 1)) + "%")
     print("Hybrid + rerank:   " + str(round(df["hybrid_rerank_match"].mean() * 100, 1)) + "%")
     print("\nSaved to " + OUTPUT_CSV)
