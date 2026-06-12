@@ -1,7 +1,5 @@
 # Clinical RAG Prototype + Eval
 
-Built for Hilbi - a patient-centric, AI and blockchain-powered digital healthcare platform.
-
 A retrieval-augmented generation system over clinical notes, featuring hybrid retrieval, pseudonymisation, and a rigorous evaluation framework.
 
 ## Architecture
