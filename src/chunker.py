@@ -10,7 +10,7 @@ from tqdm import tqdm
 from src.pseudonymise import Pseudonymiser
 from src.loader import load_mtsamples
 
-CHUNK_SIZE    = 400   # target tokens (approx — we use words as proxy)
+CHUNK_SIZE    = 400   # target chunk size in WORDS (not tokens) -- approx. 500 tokens for typical clinical-note prose
 OVERLAP       = 60    # words of overlap between chunks
 WORDS_PER_TOK = 0.75  # conservative word→token ratio
 
@@ -29,7 +29,7 @@ def split_sentences(text: str) -> list[str]:
 
 def chunk_document(doc: dict, pseudonymiser: Pseudonymiser) -> list[dict]:
     """
-    Chunk a single document into overlapping windows of ~400 tokens.
+    Chunk a single document into overlapping windows of ~400 words (approx. 500 tokens, depending on note style).
     Each chunk is pseudonymised before being returned.
     """
     text = doc["text"]
@@ -40,7 +40,6 @@ def chunk_document(doc: dict, pseudonymiser: Pseudonymiser) -> list[dict]:
 
     chunks = []
     current_words = []
-    current_sents = []
     chunk_idx = 0
 
     for sent in sentences:
@@ -69,7 +68,6 @@ def chunk_document(doc: dict, pseudonymiser: Pseudonymiser) -> list[dict]:
             current_words = overlap_words + words
         else:
             current_words.extend(words)
-        current_sents.append(sent)
 
     # Flush the final chunk
     if current_words:

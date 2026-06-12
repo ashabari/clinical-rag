@@ -54,11 +54,14 @@ def answer(
     # Step 1: Pseudonymise the query (second PII pass — first was on chunks)
     clean_query = pseudonymiser.pseudonymise_query(query)
 
-    # Step 2: Retrieve relevant chunks
+    # Step 2: Retrieve relevant chunks. already_clean=True because the
+    # query was already pseudonymised in Step 1 -- avoids a redundant
+    # NER pass over the same text inside retriever.retrieve().
     chunks = retriever.retrieve(
         clean_query,
         top_k=top_k,
-        specialty_filter=specialty_filter
+        specialty_filter=specialty_filter,
+        already_clean=True,
     )
 
     if not chunks:

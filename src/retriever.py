@@ -154,6 +154,7 @@ class Retriever:
         query: str,
         top_k: int = RERANK_TOP_K,
         specialty_filter: str | None = None,
+        already_clean: bool = False,
     ) -> list[dict]:
         """
         Main retrieval interface.
@@ -162,6 +163,9 @@ class Retriever:
             query:            Raw user query (PII will be stripped before search)
             top_k:            Number of final chunks to return (default 3)
             specialty_filter: Optionally restrict to a medical specialty
+            already_clean:    Set True if `query` was already pseudonymised
+                              by the caller (e.g. generator.answer()), to
+                              avoid running NER on the same text twice
 
         Returns:
             List of top_k dicts with keys:
@@ -169,8 +173,9 @@ class Retriever:
         """
         t0 = time.time()
 
-        # 1. Pseudonymise the query before any external call
-        clean_query = self._pseudonymiser.pseudonymise_query(query)
+        # 1. Pseudonymise the query before any external call (skip if the
+        #    caller already did this -- see `already_clean`)
+        clean_query = query if already_clean else self._pseudonymiser.pseudonymise_query(query)
 
         # 2. Embed the query
         q_embed = self._embed_query(clean_query)
