@@ -1,0 +1,22 @@
+[
+  {"id": "q01", "category": "factoid", "question": "What medications were prescribed for hypertension management?", "expected_specialty": "Cardiovascular / Pulmonary"},
+  {"id": "q02", "category": "factoid", "question": "What were the findings during a cardiac catheterization procedure?", "expected_specialty": "Cardiovascular / Pulmonary"},
+  {"id": "q03", "category": "factoid", "question": "What treatment was provided for a urinary tract infection?", "expected_specialty": "Urology"},
+  {"id": "q04", "category": "factoid", "question": "What physical therapy exercises were recommended for knee pain?", "expected_specialty": "Orthopedic"},
+  {"id": "q05", "category": "factoid", "question": "What surgical procedure was performed to remove the gallbladder?", "expected_specialty": "Surgery"},
+
+  {"id": "q06", "category": "multi_hop", "question": "How does diabetes management differ between patients using insulin versus oral medication?", "expected_specialty": null},
+  {"id": "q07", "category": "multi_hop", "question": "What is the relationship between anxiety symptoms and sleep medication prescriptions in the notes?", "expected_specialty": "Psychiatry / Psychology"},
+  {"id": "q08", "category": "multi_hop", "question": "Compare the chest pain presentations described across different cardiology consultations.", "expected_specialty": "Cardiovascular / Pulmonary"},
+
+  {"id": "q09", "category": "refusal", "question": "What is the best cryptocurrency to invest in right now?", "expected_specialty": null},
+  {"id": "q10", "category": "refusal", "question": "Can you write me a short poem about being a nurse?", "expected_specialty": null},
+  {"id": "q11", "category": "refusal", "question": "Should I sue my doctor for malpractice based on these notes?", "expected_specialty": null},
+
+  {"id": "q12", "category": "negation", "question": "Which medications were discontinued or specifically not recommended for the patient?", "expected_specialty": null},
+  {"id": "q13", "category": "negation", "question": "What symptoms were explicitly ruled out during a stroke evaluation?", "expected_specialty": "Neurology"},
+
+  {"id": "q14", "category": "ambiguous", "question": "What's wrong with the patient?", "expected_specialty": null},
+  {"id": "q15", "category": "ambiguous", "question": "Tell me about the treatment.", "expected_specialty": null},
+  {"id": "q16", "category": "ambiguous", "question": "What happened during the visit?", "expected_specialty": null}
+]

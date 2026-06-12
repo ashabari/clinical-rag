@@ -1,0 +1,12 @@
+.venv/
+venv/
+env/
+.env
+data/
+outputs/
+__pycache__/
+*.pyc
+*.pkl
+.ipynb_checkpoints/
+.DS_Store
+.DS_Store
