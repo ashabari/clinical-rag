@@ -1,0 +1,9 @@
+id,question,expected_specialty,vector_only_match,bm25_only_match,hybrid_rrf_match,hybrid_rerank_match
+q01,What medications were prescribed for hypertension ,Cardiovascular / Pulmonary,False,False,False,False
+q02,What were the findings during a cardiac catheteriz,Cardiovascular / Pulmonary,True,True,False,False
+q03,What treatment was provided for a urinary tract in,Urology,True,True,True,True
+q04,What physical therapy exercises were recommended f,Orthopedic,True,True,True,True
+q05,What surgical procedure was performed to remove th,Surgery,True,True,True,True
+q07,What is the relationship between anxiety symptoms ,Psychiatry / Psychology,True,True,True,True
+q08,Compare the chest pain presentations described acr,Cardiovascular / Pulmonary,False,True,False,True
+q13,What symptoms were explicitly ruled out during a s,Neurology,True,False,True,True

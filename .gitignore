@@ -3,10 +3,12 @@ venv/
 env/
 .env
 data/
-outputs/
+outputs/*
+!outputs/eval_results.csv
+!outputs/ablation_results.csv
+!outputs/retrieval_eval_results.csv
 __pycache__/
 *.pyc
 *.pkl
 .ipynb_checkpoints/
-.DS_Store
 .DS_Store
